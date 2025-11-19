@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 184, 157, 25)),
         useMaterial3: true,
       ),
-      home: SignInScreen(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
