@@ -99,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             minimumSize: const Size(double.infinity, 48),
                             shape: const StadiumBorder(),
                           ),
-                          child: const Text("Sign in"),
+                          child: const Text("Connexion"),
                         ),
                       const SizedBox(height: 16.0),
                       TextButton(
@@ -157,7 +157,7 @@ class _SignInScreenState extends State<SignInScreen> {
       _isLoading = true;
     });
 
-    final error = await _controller.Register(email, password);
+    final error = await _controller.Login(email, password);
 
     if (error == null) {
       Navigator.pushReplacement(
@@ -172,5 +172,9 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       );
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

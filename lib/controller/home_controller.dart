@@ -11,4 +11,15 @@ class HomeController {
       }).toList();
     });
   }
+
+  Future<void> addProduct(String name, String priceStr) async {
+    if (name.isEmpty || priceStr.isEmpty) return;
+
+    int price = int.tryParse(priceStr.replaceAll(',', '.')) ?? 0;
+
+    await _db.collection('produits').add({
+      'name': name,
+      'price': price,
+    });
+  }
 }

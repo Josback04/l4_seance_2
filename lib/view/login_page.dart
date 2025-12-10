@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:l4_seance_2/auth_provider.dart';
 import 'package:l4_seance_2/controller/login_controller.dart';
 import 'package:l4_seance_2/view/home_page.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,9 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   // final _controller = LoginController();
-
-  bool _isLoading = false;
-  final _controller = LoginController();
 
   @override
   void initState() {
@@ -69,47 +68,41 @@ class _LoginPageState extends State<LoginPage> {
                     border: OutlineInputBorder()),
               ),
               SizedBox(height: 30),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    return _doLogin();
-                  },
-                  child: _isLoading
+              Consumer<AuthProvider>(
+                builder: (context, auth, child) {
+                  if (auth.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(auth.errorMessage!,
+                          style: TextStyle(color: Colors.red)),
+                    );
+
+                  return auth.isLoading
                       ? CircularProgressIndicator()
-                      : Text('SE CONNECTER'),
-                ),
-              )
+                      : ElevatedButton(
+                          onPressed: () {
+                            _onLoginPressed(context);
+                          },
+                          child: Text("SE CONNECTER"),
+                        );
+                },
+              ),
             ],
           ),
         ));
   }
 
-  void _doLogin() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  void _onLoginPressed(BuildContext context) async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
 
-    setState(() {
-      _isLoading = true;
-    });
+    bool success = await context.read<AuthProvider>().login(email, password);
 
-    final error = await _controller.Register(email, password);
-
-    if (error == null) {
+    if (success && mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }

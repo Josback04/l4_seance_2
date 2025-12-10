@@ -19,4 +19,20 @@ class LoginController {
       }
     }
   }
+
+  Future<String?> Login(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      // UNE FOIS QU'ON EST ICI ALORS C'EST UN SUCCÈS
+
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        return 'L\'UTILISATEUR N\'EXISTE PAS';
+      } else {
+        return 'UNE ERREUR S\'EST PRODUITE "ECHEC" $e';
+      }
+    }
+  }
 }
