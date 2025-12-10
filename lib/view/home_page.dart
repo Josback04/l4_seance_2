@@ -132,12 +132,12 @@ class HomePage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context), // Ferme le dialog
+              onPressed: () => Navigator.pop(context),
               child: Text("Annuler"),
             ),
             ElevatedButton(
               onPressed: () {
-                _controller.addProduct(nameCtl.text, priceCtl.text);
+                // _controller.addProduct(nameCtl.text, priceCtl.text);
 
                 Navigator.pop(context);
 

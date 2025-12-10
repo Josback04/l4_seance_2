@@ -17,7 +17,7 @@ class HomeController {
 
     int price = int.tryParse(priceStr.replaceAll(',', '.')) ?? 0;
 
-    await _db.collection('produits').add({
+    await _db.collection('Produits').add({
       'name': name,
       'price': price,
     });
