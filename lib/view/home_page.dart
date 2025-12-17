@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 // Déconnexion via le Provider
-                context.read<AuthProvider>().logout();
+                context.read<AuthProviderr>().logout();
 
                 // Retour à la page de login
                 Navigator.of(context).pushReplacement(
@@ -31,12 +31,9 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.only(right: 20.0),
               child: Center(
                 child: Consumer<CartProvider>(
-                  // Le 'builder' se redéclenche à chaque 'notifyListeners'
                   builder: (context, cart, child) {
                     return Badge(
-                      // Widget natif Flutter pour les notifications
-                      label: Text(
-                          cart.itemCount.toString()), // Le compteur dynamique !
+                      label: Text(cart.itemCount.toString()),
                       child: Icon(Icons.shopping_cart),
                     );
                   },
@@ -61,7 +58,7 @@ class HomePage extends StatelessWidget {
               }
               if (snapshot.hasError) {
                 return Center(
-                  child: Text('Erreur de chargement !!'),
+                  child: Text('Erreur de chargement : ${snapshot.error}'),
                 );
               }
 
@@ -76,8 +73,8 @@ class HomePage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: ListTile(
                       leading: CircleAvatar(
-                        child: Text(product.nom_produit![0]),
                         backgroundColor: Colors.blueAccent,
+                        child: Text(product.nom_produit![0]),
                       ),
                       title: Text(product.nom_produit!,
                           style: TextStyle(fontWeight: FontWeight.bold)),

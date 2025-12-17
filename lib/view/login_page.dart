@@ -68,14 +68,15 @@ class _LoginPageState extends State<LoginPage> {
                     border: OutlineInputBorder()),
               ),
               SizedBox(height: 30),
-              Consumer<AuthProvider>(
+              Consumer<AuthProviderr>(
                 builder: (context, auth, child) {
-                  if (auth.errorMessage != null)
+                  if (auth.errorMessage != null) {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Text(auth.errorMessage!,
                           style: TextStyle(color: Colors.red)),
                     );
+                  }
 
                   return auth.isLoading
                       ? CircularProgressIndicator()
@@ -96,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    bool success = await context.read<AuthProvider>().login(email, password);
+    bool success = await context.read<AuthProviderr>().login(email, password);
 
     if (success && mounted) {
       Navigator.pushReplacement(

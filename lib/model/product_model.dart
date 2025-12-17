@@ -11,7 +11,7 @@ class ProductModel {
   final String? id;
   final String? nom_produit;
   final String? description_produit;
-  final int prix_produit;
+  final int? prix_produit;
 
   factory ProductModel.fromFirestore(Map<String, dynamic> data, String id) {
     return ProductModel(

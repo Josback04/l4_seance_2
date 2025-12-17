@@ -153,9 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    setState(() {
-      _isLoading = true;
-    });
+
 
     final error = await _controller.Login(email, password);
 
