@@ -3,7 +3,9 @@ import 'package:l4_seance_2/auth_provider.dart';
 import 'package:l4_seance_2/cart_provider.dart';
 import 'package:l4_seance_2/controller/home_controller.dart';
 import 'package:l4_seance_2/model/product_model.dart';
+import 'package:l4_seance_2/view/cart_page.dart';
 import 'package:l4_seance_2/view/login_page%20copy.dart';
+import 'package:l4_seance_2/view/product_details_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -15,6 +17,9 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: Text("Nos Produits"),
           actions: [
+            IconButton(
+                onPressed: () async => _showImportDialog(context),
+                icon: Icon(Icons.cloud_download)),
             IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
@@ -34,7 +39,13 @@ class HomePage extends StatelessWidget {
                   builder: (context, cart, child) {
                     return Badge(
                       label: Text(cart.itemCount.toString()),
-                      child: Icon(Icons.shopping_cart),
+                      child: IconButton(
+                        icon: Icon(Icons.shopping_cart),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CartPage())),
+                      ),
                     );
                   },
                 ),
@@ -73,12 +84,18 @@ class HomePage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.blueAccent,
-                        child: Text(product.nom_produit![0]),
+                        foregroundImage: product.image_produit != null &&
+                                product.image_produit!.isNotEmpty
+                            ? NetworkImage(product.image_produit!)
+                            : null,
+                        child: product.image_produit == null ||
+                                product.image_produit!.isEmpty
+                            ? Icon(Icons.image)
+                            : null,
                       ),
                       title: Text(product.nom_produit!,
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text("${product.prix_produit}"),
+                      subtitle: Text("${product.prix_produit} \$"),
                       trailing: IconButton(
                         onPressed: () {
                           final productClick = products[index];
@@ -96,12 +113,53 @@ class HomePage extends StatelessWidget {
                           size: 16,
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProductDetailsPage(
+                                      product: product,
+                                    )));
+                      },
                     ),
                   );
                 },
               );
             }));
+  }
+
+  void _showImportDialog(BuildContext context) async {
+    final confirm = await showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text("Importer le catalogue via API ? "),
+                  content: Text(
+                      "Ceci va télécharger tous les produits depuis L'API et les ajouter au catalogue"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: Text('Annuler')),
+                    ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: Text('Importer'))
+                  ],
+                )) ??
+        false;
+
+    if (!confirm) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Import en cours...")),
+    );
+
+    final addedCount = await _controller.importFromApi();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Import terminé ! $addedCount produits ajoutés"),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   void _showAddDialog(BuildContext context) {
