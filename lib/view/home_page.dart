@@ -16,6 +16,12 @@ class HomePage extends StatelessWidget {
           title: Text("Nos Produits"),
           actions: [
             IconButton(
+              onPressed: () async {
+                _showImportDialog(context);
+              },
+              icon: Icon(Icons.cloud_download),
+            ),
+            IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 // Déconnexion via le Provider
@@ -102,6 +108,40 @@ class HomePage extends StatelessWidget {
                 },
               );
             }));
+  }
+
+  void _showImportDialog(BuildContext context) async {
+    final confirm = await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text("Importer les produits depuis l'API"),
+                content: Text(
+                    "Nous allons télécharger les produits depuis l'API et stocker sur la DB"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text('Annuler')),
+                  ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text('Importer')),
+                ],
+              );
+            }) ??
+        false;
+
+    if (!confirm) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Import en cours...")),
+    );
+
+    final count = await _controller.importFromApi();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Import terminé ! $count produits importés'),
+      backgroundColor: Colors.green,
+    ));
   }
 
   void _showAddDialog(BuildContext context) {
