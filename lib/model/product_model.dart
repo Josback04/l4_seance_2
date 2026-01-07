@@ -11,14 +11,14 @@ class ProductModel {
   final String? id;
   final String? nom_produit;
   final String? description_produit;
-  final int? prix_produit;
+  final double? prix_produit;
 
   factory ProductModel.fromFirestore(Map<String, dynamic> data, String id) {
     return ProductModel(
       id: id,
       nom_produit: data['nom_produit'],
       description_produit: data['description_produit'],
-      prix_produit: data['prix_produit'],
+      prix_produit: (data['prix_produit'] as num).toDouble(),
     );
   }
 }
